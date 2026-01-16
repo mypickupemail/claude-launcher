@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Claude Launcher
+
+A beautiful local dashboard to launch Claude Code terminals in your projects and resume previous sessions.
+
+![Claude Launcher](https://img.shields.io/badge/macOS-only-blue) ![Next.js](https://img.shields.io/badge/Next.js-15-black) ![License](https://img.shields.io/badge/license-MIT-green)
+
+## Features
+
+- **Quick Launch** - Open multiple Claude Code terminals in any project with one click
+- **Session History** - Browse and resume previous Claude conversations from `~/.claude`
+- **Folder Browser** - Navigate and select project folders visually (way better than Finder)
+- **Beautiful UI** - Dark theme with glass-morphism, smooth animations
+- **Sound Effects** - Subtle audio feedback using Web Audio API
+- **Filter Sessions** - Filter conversation history by project path
+
+## How It Works
+
+- Reads your Claude session history directly from `~/.claude/__store.db`
+- Opens Terminal.app with `claude --dangerously-skip-permissions` via AppleScript
+- Stores your project shortcuts locally in `config/projects.json`
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Clone the repo
+git clone https://github.com/mypickupemail/claude-launcher.git
+cd claude-launcher
+
+# Install dependencies
+npm install
+
+# Run the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Add a project** - Click "Add Project", use the folder browser to select your project directory
+2. **Launch terminals** - Select how many terminals you want and click "Launch"
+3. **Resume sessions** - Scroll down to see your recent Claude conversations, click "Resume" to continue any session
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js 15** - React framework with App Router
+- **Tailwind CSS** - Styling with custom dark theme
+- **better-sqlite3** - Read Claude's session database
+- **Web Audio API** - Synthesized sound effects
+- **osascript** - Terminal.app automation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Requirements
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **macOS** (uses Terminal.app via AppleScript)
+- **Claude Code CLI** installed and configured
+- **Node.js 18+**
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+MIT
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+*Built with Claude Code in one session*

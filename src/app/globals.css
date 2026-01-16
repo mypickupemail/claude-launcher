@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --background-secondary: #1e293b;
+  --foreground: #f1f5f9;
+  --foreground-muted: #94a3b8;
+  --accent-cyan: #06b6d4;
+  --accent-amber: #f59e0b;
+  --accent-violet: #8b5cf6;
+  --accent-emerald: #10b981;
+  --card-bg: rgba(30, 41, 59, 0.6);
+  --card-border: rgba(148, 163, 184, 0.1);
+  --card-hover: rgba(30, 41, 59, 0.8);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-violet: var(--accent-violet);
+  --color-accent-emerald: var(--accent-emerald);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-card-hover: var(--card-hover);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: linear-gradient(135deg, var(--background) 0%, var(--background-secondary) 100%);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  min-height: 100vh;
 }
 
-body {
+/* Glass morphism card effect */
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.glass-card:hover {
+  background: var(--card-hover);
+  border-color: rgba(148, 163, 184, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Subtle glow effect on buttons */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+.glow-amber {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+/* Smooth button transitions */
+button {
+  transition: all 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--foreground-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Path text styling */
+.path-text {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
 }
