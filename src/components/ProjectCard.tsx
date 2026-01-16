@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Play, Trash2, ChevronDown } from 'lucide-react';
+import { Play, Trash2, ChevronDown, Plus, Minus } from 'lucide-react';
 import { useSounds } from './SoundProvider';
 
 interface Project {
@@ -18,7 +18,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onDelete }: ProjectCardProps) {
-  const [terminalCount, setTerminalCount] = useState(project.defaultTerminals);
+  const [terminalCount, setTerminalCount] = useState(1); // Default to 1
   const [isLaunching, setIsLaunching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const { play } = useSounds();
@@ -50,6 +50,16 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
   const handleDelete = () => {
     play('click');
     onDelete(project.id);
+  };
+
+  const incrementCount = () => {
+    play('click');
+    setTerminalCount(prev => Math.min(prev + 1, 10));
+  };
+
+  const decrementCount = () => {
+    play('click');
+    setTerminalCount(prev => Math.max(prev - 1, 1));
   };
 
   // Truncate path for display
@@ -85,40 +95,67 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
       {/* Actions */}
       <div className="flex items-center gap-2">
-        {/* Terminal count selector */}
-        <div className="relative">
+        {/* Terminal count selector with +/- buttons */}
+        <div className="flex items-center">
+          {/* Minus button */}
           <button
-            onClick={() => {
-              play('click');
-              setShowDropdown(!showDropdown);
-            }}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-[var(--background)]
-                       border border-[var(--card-border)] hover:border-[var(--foreground-muted)]
-                       text-sm transition-colors"
+            onClick={decrementCount}
+            disabled={terminalCount <= 1}
+            className="p-2 rounded-l-lg bg-[var(--background)] border border-[var(--card-border)]
+                       border-r-0 hover:bg-[var(--card-bg)] transition-colors
+                       disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Decrease terminal count"
           >
-            <span className="font-mono">{terminalCount}</span>
-            <ChevronDown size={14} className="text-[var(--foreground-muted)]" />
+            <Minus size={14} />
           </button>
 
-          {showDropdown && (
-            <div className="absolute bottom-full mb-1 left-0 bg-[var(--background-secondary)]
-                            border border-[var(--card-border)] rounded-lg py-1 z-10 min-w-[48px]">
-              {[1, 2, 3, 4, 5].map(num => (
-                <button
-                  key={num}
-                  onClick={() => {
-                    play('click');
-                    setTerminalCount(num);
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full px-3 py-1.5 text-sm text-left hover:bg-[var(--card-bg)] transition-colors
-                             ${num === terminalCount ? 'text-[var(--accent-cyan)]' : ''}`}
-                >
-                  {num}
-                </button>
-              ))}
-            </div>
-          )}
+          {/* Count display with dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                play('click');
+                setShowDropdown(!showDropdown);
+              }}
+              className="flex items-center gap-1 px-3 py-2 bg-[var(--background)]
+                         border-y border-[var(--card-border)] hover:bg-[var(--card-bg)]
+                         text-sm transition-colors min-w-[52px] justify-center"
+            >
+              <span className="font-mono font-medium">{terminalCount}</span>
+              <ChevronDown size={12} className="text-[var(--foreground-muted)]" />
+            </button>
+
+            {showDropdown && (
+              <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-[var(--background-secondary)]
+                              border border-[var(--card-border)] rounded-lg py-1 z-10 min-w-[48px] max-h-[200px] overflow-y-auto">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+                  <button
+                    key={num}
+                    onClick={() => {
+                      play('click');
+                      setTerminalCount(num);
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full px-3 py-1.5 text-sm text-center hover:bg-[var(--card-bg)] transition-colors
+                               ${num === terminalCount ? 'text-[var(--accent-cyan)] font-medium' : ''}`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Plus button */}
+          <button
+            onClick={incrementCount}
+            disabled={terminalCount >= 10}
+            className="p-2 rounded-r-lg bg-[var(--background)] border border-[var(--card-border)]
+                       border-l-0 hover:bg-[var(--card-bg)] transition-colors
+                       disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Increase terminal count"
+          >
+            <Plus size={14} />
+          </button>
         </div>
 
         {/* Launch button */}

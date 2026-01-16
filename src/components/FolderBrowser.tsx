@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Folder, ChevronUp, Check, X, Home } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Folder, ChevronUp, Check, X, Home, Search } from 'lucide-react';
 import { useSounds } from './SoundProvider';
 
 interface DirectoryEntry {
@@ -23,12 +23,14 @@ export function FolderBrowser({ isOpen, onClose, onSelect, initialPath }: Folder
   const [parentPath, setParentPath] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const { play } = useSounds();
 
   // Fetch directory contents
   const fetchDirectory = useCallback(async (path: string) => {
     setIsLoading(true);
     setError('');
+    setSearchQuery(''); // Reset search when navigating
 
     try {
       const response = await fetch(`/api/browse?path=${encodeURIComponent(path)}`);
@@ -56,6 +58,15 @@ export function FolderBrowser({ isOpen, onClose, onSelect, initialPath }: Folder
       fetchDirectory(initialPath || '~');
     }
   }, [isOpen, initialPath, fetchDirectory]);
+
+  // Filter directories based on search
+  const filteredDirectories = useMemo(() => {
+    if (!searchQuery.trim()) return directories;
+    const query = searchQuery.toLowerCase();
+    return directories.filter(dir =>
+      dir.name.toLowerCase().includes(query)
+    );
+  }, [directories, searchQuery]);
 
   if (!isOpen) return null;
 
@@ -133,6 +144,20 @@ export function FolderBrowser({ isOpen, onClose, onSelect, initialPath }: Folder
           )}
         </div>
 
+        {/* Search input */}
+        <div className="relative mb-3">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--foreground-muted)]" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Search folders..."
+            className="w-full pl-9 pr-3 py-2 rounded-lg bg-[var(--background)]
+                       border border-[var(--card-border)] focus:border-[var(--accent-cyan)]
+                       outline-none transition-colors text-sm"
+          />
+        </div>
+
         {/* Directory list */}
         <div className="flex-1 overflow-y-auto min-h-[200px] max-h-[300px] rounded-lg
                         bg-[var(--background)] border border-[var(--card-border)]">
@@ -144,13 +169,13 @@ export function FolderBrowser({ isOpen, onClose, onSelect, initialPath }: Folder
             <div className="flex items-center justify-center h-full text-red-400">
               {error}
             </div>
-          ) : directories.length === 0 ? (
+          ) : filteredDirectories.length === 0 ? (
             <div className="flex items-center justify-center h-full text-[var(--foreground-muted)]">
-              No subdirectories
+              {searchQuery ? 'No matching folders' : 'No subdirectories'}
             </div>
           ) : (
             <div className="divide-y divide-[var(--card-border)]">
-              {directories.map(dir => (
+              {filteredDirectories.map(dir => (
                 <button
                   key={dir.path}
                   onClick={() => handleNavigate(dir.path)}

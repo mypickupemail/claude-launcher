@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Open new terminal(s)
-    const terminalCount = Math.min(Math.max(count || 1, 1), 5); // Limit 1-5
+    const terminalCount = Math.min(Math.max(count || 1, 1), 10); // Limit 1-10
 
     await openTerminal({
       cwd: projectPath,
