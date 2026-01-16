@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Zap, Plus, Filter, RefreshCw } from 'lucide-react';
+import { Plus, Filter, RefreshCw } from 'lucide-react';
+import Image from 'next/image';
 import { ProjectCard } from '@/components/ProjectCard';
 import { SessionCard } from '@/components/SessionCard';
 import { AddProjectModal } from '@/components/AddProjectModal';
@@ -134,7 +135,13 @@ export default function Home() {
       {/* Header */}
       <header className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Zap size={28} className="text-[var(--accent-amber)]" />
+          <Image
+            src="/apple-touch-icon.png"
+            alt="Claude Launcher"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
           <span>Claude Launcher</span>
         </h1>
         <button
