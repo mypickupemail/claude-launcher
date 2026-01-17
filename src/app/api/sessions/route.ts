@@ -10,12 +10,12 @@ export async function GET(request: NextRequest) {
 
     // Return just project paths for the filter dropdown
     if (pathsOnly) {
-      const paths = getProjectPaths();
+      const paths = await getProjectPaths();
       return NextResponse.json({ paths });
     }
 
     // Return sessions, optionally filtered by project
-    const sessions = getRecentSessions(limit, project || undefined);
+    const sessions = await getRecentSessions(limit, project || undefined);
 
     return NextResponse.json({
       sessions,
