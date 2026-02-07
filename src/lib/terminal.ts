@@ -25,20 +25,34 @@ export async function openTerminal(options: OpenTerminalOptions): Promise<void> 
 
   const escapedCwd = escapeForAppleScript(cwd);
   const escapedCommand = escapeForAppleScript(command);
+  const cmdStr = `cd '${escapedCwd}' && ${escapedCommand}`;
 
-  const script = `
-    tell application "Terminal"
-      activate
-      do script "cd '${escapedCwd}' && ${escapedCommand}"
-    end tell
-  `;
-
-  // Open terminals sequentially with small delay to avoid race conditions
-  for (let i = 0; i < count; i++) {
+  if (count === 1) {
+    const script = `
+      tell application "Terminal"
+        activate
+        do script "${cmdStr}"
+      end tell
+    `;
     await execAsync(`osascript -e '${script}'`);
-    if (i < count - 1) {
-      await new Promise(resolve => setTimeout(resolve, 300));
+  } else {
+    // Open multiple terminals as tabs in the same window
+    const scriptLines = [
+      'tell application "Terminal"',
+      '  activate',
+      `  do script "${cmdStr}"`,
+    ];
+
+    for (let i = 1; i < count; i++) {
+      scriptLines.push('  delay 0.5');
+      scriptLines.push('  tell application "System Events" to keystroke "t" using command down');
+      scriptLines.push('  delay 0.5');
+      scriptLines.push(`  do script "${cmdStr}" in front window`);
     }
+
+    scriptLines.push('end tell');
+    const script = scriptLines.join('\n');
+    await execAsync(`osascript -e '${script}'`);
   }
 }
 
